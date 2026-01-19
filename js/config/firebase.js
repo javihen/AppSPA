@@ -4,12 +4,12 @@
  */
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyD04Rshct4LNMV1PBJRoPEwVupo5xie1Pc",
+    authDomain: "appspa-cf14d.firebaseapp.com",
+    projectId: "appspa-cf14d",
+    storageBucket: "appspa-cf14d.firebasestorage.app",
+    messagingSenderId: "828208343990",
+    appId: "1:828208343990:web:2336177f5cc7595b0a6f17"
 };
 
 // Inicializar Firebase
