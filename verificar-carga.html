@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Carga - SPA Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 p-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-4xl font-bold text-center mb-8">🧪 Prueba de Carga</h1>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 space-y-4">
+            <div id="firebase-lib" class="p-4 bg-gray-100 rounded border-l-4 border-gray-500">
+                <h3 class="font-bold">Firebase SDK</h3>
+                <p id="firebase-lib-status" class="text-sm">⏳ Cargando...</p>
+            </div>
+
+            <div id="firebase-init" class="p-4 bg-gray-100 rounded border-l-4 border-gray-500">
+                <h3 class="font-bold">Firebase Init</h3>
+                <p id="firebase-init-status" class="text-sm">⏳ Esperando...</p>
+            </div>
+
+            <div id="local-storage" class="p-4 bg-gray-100 rounded border-l-4 border-gray-500">
+                <h3 class="font-bold">LocalStorage DB</h3>
+                <p id="local-storage-status" class="text-sm">⏳ Esperando...</p>
+            </div>
+
+            <div id="database-service" class="p-4 bg-gray-100 rounded border-l-4 border-gray-500">
+                <h3 class="font-bold">Database Service</h3>
+                <p id="database-service-status" class="text-sm">⏳ Esperando...</p>
+            </div>
+
+            <div id="auth-service" class="p-4 bg-gray-100 rounded border-l-4 border-gray-500">
+                <h3 class="font-bold">Auth Service</h3>
+                <p id="auth-service-status" class="text-sm">⏳ Esperando...</p>
+            </div>
+
+            <div id="result" class="p-4 bg-green-50 rounded border-l-4 border-green-500 hidden">
+                <h3 class="font-bold text-green-700">✅ ¡TODO LISTO!</h3>
+                <p id="result-text" class="text-sm text-green-600 mt-2">La aplicación se cargó correctamente</p>
+            </div>
+
+            <div id="error" class="p-4 bg-red-50 rounded border-l-4 border-red-500 hidden">
+                <h3 class="font-bold text-red-700">❌ Error detectado</h3>
+                <p id="error-text" class="text-sm text-red-600 mt-2"></p>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center">
+            <a href="index.html" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700">
+                🚀 Abrir Aplicación
+            </a>
+        </div>
+
+        <div class="mt-8 p-4 bg-blue-50 rounded text-sm text-blue-700">
+            <p>📝 <strong>Cómo funcionan las pruebas:</strong></p>
+            <p>1. Verifica que todas las librerías cargan correctamente</p>
+            <p>2. Verifica que Firebase se inicializa (o fallback a localStorage)</p>
+            <p>3. Verifica que los servicios se cargan</p>
+            <p>4. Si hay errores, aparecerán abajo en rojo</p>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+
+    <script>
+        function updateStatus(elementId, text, status = 'loading') {
+            const elem = document.getElementById(elementId + '-status');
+            elem.textContent = text;
+
+            const container = document.getElementById(elementId);
+            container.classList.remove('border-gray-500', 'border-blue-500', 'border-green-500', 'border-red-500');
+            container.classList.remove('bg-gray-100', 'bg-blue-50', 'bg-green-50', 'bg-red-50');
+
+            switch (status) {
+                case 'loading':
+                    container.classList.add('border-blue-500', 'bg-blue-50');
+                    break;
+                case 'success':
+                    container.classList.add('border-green-500', 'bg-green-50');
+                    break;
+                case 'error':
+                    container.classList.add('border-red-500', 'bg-red-50');
+                    break;
+                default:
+                    container.classList.add('border-gray-500', 'bg-gray-100');
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('error').classList.remove('hidden');
+            document.getElementById('error-text').textContent = message;
+            console.error('ERROR:', message);
+        }
+
+        function showSuccess() {
+            document.getElementById('result').classList.remove('hidden');
+        }
+
+        // Prueba 1: Firebase SDK
+        updateStatus('firebase-lib', '✅ Firebase SDK cargado', 'success');
+
+        // Prueba 2: Firebase Init
+        updateStatus('firebase-init', '⏳ Inicializando...', 'loading');
+
+        setTimeout(() => {
+            try {
+                if (typeof firebase === 'undefined') {
+                    throw new Error('Firebase SDK no disponible');
+                }
+                console.log('✅ Firebase SDK:', firebase.SDK_VERSION);
+                updateStatus('firebase-init', '✅ Firebase inicializado', 'success');
+            } catch (error) {
+                updateStatus('firebase-init', '❌ ' + error.message, 'error');
+                showError(error.message);
+            }
+        }, 500);
+
+        // Prueba 3: LocalStorage
+        updateStatus('local-storage', '⏳ Verificando...', 'loading');
+        setTimeout(() => {
+            try {
+                localStorage.setItem('test', 'ok');
+                localStorage.removeItem('test');
+                updateStatus('local-storage', '✅ LocalStorage disponible', 'success');
+            } catch (error) {
+                updateStatus('local-storage', '❌ ' + error.message, 'error');
+                showError(error.message);
+            }
+        }, 800);
+
+        // Cargar config y servicios
+        const script1 = document.createElement('script');
+        script1.src = 'js/config/firebase.js';
+        script1.onload = () => {
+            setTimeout(() => {
+                try {
+                    updateStatus('database-service', '⏳ Verificando...', 'loading');
+
+                    // Cargar services
+                    const script2 = document.createElement('script');
+                    script2.src = 'js/utils/helpers.js';
+                    document.head.appendChild(script2);
+
+                    const script3 = document.createElement('script');
+                    script3.src = 'js/services/localStorageDB.js';
+                    document.head.appendChild(script3);
+
+                    const script4 = document.createElement('script');
+                    script4.src = 'js/services/realtimeDB.js';
+                    document.head.appendChild(script4);
+
+                    const script5 = document.createElement('script');
+                    script5.src = 'js/services/database.js';
+                    script5.onload = () => {
+                        try {
+                            setTimeout(() => {
+                                DatabaseService.init();
+                                const mode = DatabaseService.isLocalStorage ? 'localStorage' : 'Realtime DB';
+                                updateStatus('database-service', '✅ Usando: ' + mode, 'success');
+
+                                // Prueba 5: Auth
+                                updateStatus('auth-service', '⏳ Verificando...', 'loading');
+                                const script6 = document.createElement('script');
+                                script6.src = 'js/services/auth.js';
+                                script6.onload = () => {
+                                    setTimeout(() => {
+                                        AuthService.init();
+                                        updateStatus('auth-service', '✅ Auth inicializado', 'success');
+                                        showSuccess();
+                                    }, 500);
+                                };
+                                document.head.appendChild(script6);
+                            }, 300);
+                        } catch (error) {
+                            updateStatus('database-service', '❌ ' + error.message, 'error');
+                            showError(error.message);
+                        }
+                    };
+                    document.head.appendChild(script5);
+                } catch (error) {
+                    updateStatus('database-service', '❌ ' + error.message, 'error');
+                    showError(error.message);
+                }
+            }, 1000);
+        };
+        script1.onerror = () => {
+            showError('No se pudo cargar firebase.js');
+        };
+        document.head.appendChild(script1);
+    </script>
+</body>
+
+</html>

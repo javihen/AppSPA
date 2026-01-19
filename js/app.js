@@ -154,24 +154,58 @@ class App {
             HelpersFunctions.showError(error.message);
         }
     }
-}
+
+    /**
+     * Configurar manejadores de teclado global
+     */
+    static setupKeyboardHandlers() {
+        document.addEventListener('keydown', (e) => {
+            // Cerrar modal con ESC
+            if (e.key === 'Escape') {
+                // Buscar y cerrar todos los modales visibles
+                const modals = document.querySelectorAll('.modal-overlay:not(.hidden)');
+                modals.forEach(modal => {
+                    // Determinar qué tipo de modal es y llamar al método correspondiente
+                    if (modal.id === 'clientasModal' && typeof ClientasPage !== 'undefined') {
+                        ClientasPage.closeModal();
+                    } else if (modal.id === 'empleadasModal' && typeof EmpleadasPage !== 'undefined') {
+                        EmpleadasPage.closeModal();
+                    } else if (modal.id === 'serviciosModal' && typeof ServiciosPage !== 'undefined') {
+                        ServiciosPage.closeModal();
+                    } else if (modal.id === 'atencionesModal' && typeof AtencioneesPage !== 'undefined') {
+                        AtencioneesPage.closeModal();
+                    }
+                });
+            }
+        });
+    }
 
 // Inicializar cuando esté listo el DOM
 document.addEventListener('DOMContentLoaded', () => {
-    // Verificar modo demo y mostrar banner
-    if (DatabaseService.isLocalStorage) {
-        const banner = document.createElement('div');
-        banner.id = 'demo-banner';
-        banner.innerHTML = `
-            <div style="background: linear-gradient(90deg, #ec4899 0%, #a78bfa 100%); color: white; padding: 10px; text-align: center; font-weight: bold; position: fixed; top: 0; left: 0; right: 0; z-index: 9999; font-size: 14px;">
-                📱 Modo DEMO: Los datos se guardan en tu navegador | <a href="#" onclick="localStorage.clear(); location.reload(); return false;" style="color: white; text-decoration: underline; margin-left: 10px;">Limpiar datos</a>
-            </div>
-        `;
-        document.body.insertBefore(banner, document.body.firstChild);
-        document.body.style.paddingTop = '45px'; // Espacio para el banner
-    }
-    
-    App.init();
+    // Esperar un poco para que Firebase se inicialice
+    setTimeout(() => {
+        // Inicializar DatabaseService
+        DatabaseService.init();
+        
+        // Configurar manejadores de teclado global
+        App.setupKeyboardHandlers();
+        
+        // Verificar modo demo y mostrar banner
+        if (DatabaseService.isLocalStorage) {
+            const banner = document.createElement('div');
+            banner.id = 'demo-banner';
+            banner.innerHTML = `
+                <div style="background: linear-gradient(90deg, #ec4899 0%, #a78bfa 100%); color: white; padding: 10px; text-align: center; font-weight: bold; position: fixed; top: 0; left: 0; right: 0; z-index: 9999; font-size: 14px;">
+                    📱 Modo DEMO: Los datos se guardan en tu navegador | <a href="#" onclick="localStorage.clear(); location.reload(); return false;" style="color: white; text-decoration: underline; margin-left: 10px;">Limpiar datos</a>
+                </div>
+            `;
+            document.body.insertBefore(banner, document.body.firstChild);
+            document.body.style.paddingTop = '45px'; // Espacio para el banner
+        }
+        
+        // Inicializar la app
+        App.init();
+    }, 500); // Esperar 500ms para que Firebase esté completamente listo
 });
 
 // Exportar

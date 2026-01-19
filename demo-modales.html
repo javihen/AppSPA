@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo de Modales - SPA Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-gray-100">
+    <!-- Content -->
+    <div class="min-h-screen p-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="mb-12">
+                <h1 class="text-4xl font-bold text-gray-800 mb-2">🎭 Demo de Modales</h1>
+                <p class="text-gray-600">Prueba todos los modales de la aplicación</p>
+            </div>
+
+            <!-- Grid de botones -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <!-- Modal Clientas -->
+                <button onclick="openTestModal('clientas')"
+                    class="btn-primary p-6 rounded-xl shadow-lg hover:shadow-xl transition-all text-left">
+                    <div class="text-2xl mb-2">👩</div>
+                    <div class="font-bold">Modal Clientas</div>
+                    <div class="text-sm text-pink-100">Agregar/Editar Clientas</div>
+                </button>
+
+                <!-- Modal Empleadas -->
+                <button onclick="openTestModal('empleadas')"
+                    class="btn-primary p-6 rounded-xl shadow-lg hover:shadow-xl transition-all text-left">
+                    <div class="text-2xl mb-2">💄</div>
+                    <div class="font-bold">Modal Empleadas</div>
+                    <div class="text-sm text-pink-100">Agregar/Editar Empleadas</div>
+                </button>
+
+                <!-- Modal Servicios -->
+                <button onclick="openTestModal('servicios')"
+                    class="btn-primary p-6 rounded-xl shadow-lg hover:shadow-xl transition-all text-left">
+                    <div class="text-2xl mb-2">💅</div>
+                    <div class="font-bold">Modal Servicios</div>
+                    <div class="text-sm text-pink-100">Agregar/Editar Servicios</div>
+                </button>
+
+                <!-- Modal Atenciones -->
+                <button onclick="openTestModal('atenciones')"
+                    class="btn-primary p-6 rounded-xl shadow-lg hover:shadow-xl transition-all text-left">
+                    <div class="text-2xl mb-2">📋</div>
+                    <div class="font-bold">Modal Atenciones</div>
+                    <div class="text-sm text-pink-100">Agregar/Editar Atenciones</div>
+                </button>
+            </div>
+
+            <!-- Info Cards -->
+            <div class="bg-white rounded-xl shadow-lg p-8 space-y-6">
+                <h2 class="text-2xl font-bold text-gray-800">📝 Cómo Probar</h2>
+
+                <div class="space-y-4">
+                    <div class="border-l-4 border-pink-500 pl-4">
+                        <h3 class="font-bold text-gray-800">1️⃣ Abrir Modal</h3>
+                        <p class="text-gray-600">Haz clic en cualquiera de los botones arriba</p>
+                    </div>
+
+                    <div class="border-l-4 border-pink-500 pl-4">
+                        <h3 class="font-bold text-gray-800">2️⃣ Cerrar Modal (3 formas)</h3>
+                        <ul class="text-gray-600 space-y-2 mt-2">
+                            <li>✅ Presiona la tecla <kbd class="bg-gray-100 px-2 py-1 rounded">ESC</kbd></li>
+                            <li>✅ Haz clic en el botón "Cancelar"</li>
+                            <li>✅ Haz clic en el botón "✕"</li>
+                            <li>✅ Haz clic en el fondo oscuro (overlay)</li>
+                        </ul>
+                    </div>
+
+                    <div class="border-l-4 border-pink-500 pl-4">
+                        <h3 class="font-bold text-gray-800">3️⃣ Observa</h3>
+                        <ul class="text-gray-600 space-y-2 mt-2">
+                            <li>🎬 Animación suave de entrada (slideUp)</li>
+                            <li>🔒 El fondo se oscurece (overlay)</li>
+                            <li>📱 El scroll en background está deshabilitado</li>
+                            <li>✨ Efecto blur en el fondo</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p class="text-sm text-blue-700">
+                        <strong>💡 Tip:</strong> Prueba scrollear en la página con el modal abierto. El scroll debería
+                        estar deshabilitado hasta que cierres el modal.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-12 text-center text-gray-600">
+                <p>Demo de Modales - SPA Manager v2.0</p>
+                <a href="index.html" class="text-pink-500 hover:text-pink-700 font-bold mt-2 inline-block">
+                    ← Volver a la Aplicación
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Test Clientas -->
+    <div id="testClientasModal" class="hidden modal-overlay"
+        onclick="if(event.target.id === 'testClientasModal') closeTestModal('clientas')">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold">👩 Agregar/Editar Clienta</h3>
+                <button onclick="closeTestModal('clientas')" class="text-2xl">✕</button>
+            </div>
+            <form class="modal-body space-y-4">
+                <div>
+                    <label class="form-label">Nombre Completo</label>
+                    <input type="text" class="form-input" placeholder="Ej: María García" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">Teléfono</label>
+                        <input type="tel" class="form-input" placeholder="5551234567">
+                    </div>
+                    <div>
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" placeholder="maria@email.com">
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">Tipo de Servicio Favorito</label>
+                    <select class="form-input">
+                        <option>Selecciona un servicio</option>
+                        <option>Masaje</option>
+                        <option>Facial</option>
+                        <option>Manicure</option>
+                    </select>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button onclick="closeTestModal('clientas')" class="btn-secondary">Cancelar</button>
+                <button onclick="closeTestModal('clientas'); alert('✅ Guardado!')" class="btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Test Empleadas -->
+    <div id="testEmpleadasModal" class="hidden modal-overlay"
+        onclick="if(event.target.id === 'testEmpleadasModal') closeTestModal('empleadas')">
+        <div class="modal-content max-w-3xl">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold">💄 Agregar/Editar Empleada</h3>
+                <button onclick="closeTestModal('empleadas')" class="text-2xl">✕</button>
+            </div>
+            <form class="modal-body space-y-4">
+                <div>
+                    <h4 class="font-bold text-gray-800 mb-3">Datos Personales</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-input" placeholder="Ej: Rosa López" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Puesto</label>
+                            <input type="text" class="form-input" placeholder="Ej: Masajista">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-800 mb-3">Porcentajes de Comisión</h4>
+                    <div class="space-y-3 border border-pink-200 rounded-lg p-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="form-label">Masaje (%)</label>
+                                <input type="number" class="form-input" value="30" min="0" max="100">
+                            </div>
+                            <div>
+                                <label class="form-label">Facial (%)</label>
+                                <input type="number" class="form-input" value="35" min="0" max="100">
+                            </div>
+                            <div>
+                                <label class="form-label">Manicure (%)</label>
+                                <input type="number" class="form-input" value="20" min="0" max="100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button onclick="closeTestModal('empleadas')" class="btn-secondary">Cancelar</button>
+                <button onclick="closeTestModal('empleadas'); alert('✅ Guardado!')" class="btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Test Servicios -->
+    <div id="testServiciosModal" class="hidden modal-overlay"
+        onclick="if(event.target.id === 'testServiciosModal') closeTestModal('servicios')">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold">💅 Agregar/Editar Servicio</h3>
+                <button onclick="closeTestModal('servicios')" class="text-2xl">✕</button>
+            </div>
+            <form class="modal-body space-y-4">
+                <div>
+                    <label class="form-label">Nombre del Servicio</label>
+                    <input type="text" class="form-input" placeholder="Ej: Masaje Relajante" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">Categoría</label>
+                        <select class="form-input">
+                            <option>Masajes</option>
+                            <option>Faciales</option>
+                            <option>Manicure</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Duración (min)</label>
+                        <input type="number" class="form-input" value="60" min="15" step="15">
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">Precio (MXN)</label>
+                    <input type="number" class="form-input" value="500" min="0" step="10" required>
+                </div>
+                <div>
+                    <label class="form-label">Descripción</label>
+                    <textarea class="form-input" rows="3" placeholder="Detalles del servicio"></textarea>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button onclick="closeTestModal('servicios')" class="btn-secondary">Cancelar</button>
+                <button onclick="closeTestModal('servicios'); alert('✅ Guardado!')" class="btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Test Atenciones -->
+    <div id="testAtencioneesModal" class="hidden modal-overlay"
+        onclick="if(event.target.id === 'testAtencioneesModal') closeTestModal('atenciones')">
+        <div class="modal-content max-w-3xl">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold">📋 Agregar/Editar Atención</h3>
+                <button onclick="closeTestModal('atenciones')" class="text-2xl">✕</button>
+            </div>
+            <form class="modal-body space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">Clienta</label>
+                        <select class="form-input">
+                            <option>Selecciona clienta</option>
+                            <option>María García</option>
+                            <option>Ana López</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Empleada</label>
+                        <select class="form-input">
+                            <option>Selecciona empleada</option>
+                            <option>Rosa López</option>
+                            <option>Carmen García</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">Fecha y Hora</label>
+                    <input type="datetime-local" class="form-input" required>
+                </div>
+                <div>
+                    <label class="form-label">Servicios Realizados</label>
+                    <div class="space-y-2 border border-pink-200 rounded-lg p-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-2" checked>
+                            <span>Masaje Relajante - $500</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-2">
+                            <span>Facial Completo - $300</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">Total (MXN)</label>
+                    <input type="number" class="form-input" value="500" readonly>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button onclick="closeTestModal('atenciones')" class="btn-secondary">Cancelar</button>
+                <button onclick="closeTestModal('atenciones'); alert('✅ Guardado!')"
+                    class="btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Abrir modal de prueba
+        function openTestModal(type) {
+            const modalId = `test${type.charAt(0).toUpperCase() + type.slice(1)}Modal`;
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('hidden');
+            void modal.offsetWidth; // Force reflow
+            document.body.style.overflow = 'hidden';
+            console.log(`✅ Modal abierto: ${type}`);
+        }
+
+        // Cerrar modal de prueba
+        function closeTestModal(type) {
+            const modalId = `test${type.charAt(0).toUpperCase() + type.slice(1)}Modal`;
+            const modal = document.getElementById(modalId);
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            console.log(`❌ Modal cerrado: ${type}`);
+        }
+
+        // Manejador de teclado global
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const openModals = document.querySelectorAll('.modal-overlay:not(.hidden)');
+                if (openModals.length > 0) {
+                    const lastModal = openModals[openModals.length - 1];
+                    const type = lastModal.id.replace('test', '').replace('Modal', '').toLowerCase();
+                    closeTestModal(type);
+                }
+            }
+        });
+
+        // Log de inicialización
+        console.log('✅ Demo de Modales cargada');
+        console.log('💡 Pruebas disponibles:');
+        console.log('   - Abre cualquier modal');
+        console.log('   - Presiona ESC para cerrar');
+        console.log('   - Haz clic en el botón ✕');
+        console.log('   - Haz clic en Cancelar');
+        console.log('   - Haz clic en el fondo oscuro');
+    </script>
+</body>
+
+</html>

@@ -11,9 +11,23 @@ class AuthService {
     static listeners = [];
 
     static init() {
-        this.isLocalMode = window.location.protocol === 'file:' || (typeof firebaseConfig === 'undefined' || !firebaseConfig.projectId);
-        if (this.isLocalMode) {
-            console.log('✅ Modo DEMO: Autenticación local');
+        try {
+            // Determinar si usar modo local
+            const hasNoFirebase = typeof firebase === 'undefined' || !firebase.apps || firebase.apps.length === 0;
+            const isFileProtocol = window.location.protocol === 'file:';
+            const noFirebaseConfig = typeof firebaseConfig === 'undefined' || !firebaseConfig.projectId;
+            
+            this.isLocalMode = isFileProtocol || hasNoFirebase || noFirebaseConfig;
+            
+            if (this.isLocalMode) {
+                console.log('📱 Autenticación: Modo LOCAL');
+                this.loadLocalUser();
+            } else {
+                console.log('🔥 Autenticación: Firebase');
+            }
+        } catch (error) {
+            console.error('Error inicializando AuthService:', error);
+            this.isLocalMode = true;
             this.loadLocalUser();
         }
     }

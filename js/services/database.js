@@ -13,23 +13,36 @@ class DatabaseService {
     static db = null;
 
     static init() {
-        // Verificar si debe usar localStorage
-        const isFileProtocol = window.location.protocol === 'file:';
-        const hasFirebaseConfig = typeof firebaseConfig !== 'undefined' && firebaseConfig.projectId;
-        
-        this.isLocalStorage = isFileProtocol && !hasFirebaseConfig;
-        this.isRealtimeDB = !this.isLocalStorage && hasFirebaseConfig && typeof db !== 'undefined';
-        this.isFirestore = !this.isLocalStorage && !this.isRealtimeDB && hasFirebaseConfig;
-        
-        if (this.isLocalStorage) {
+        try {
+            // Verificar si debe usar localStorage
+            const isFileProtocol = window.location.protocol === 'file:';
+            const hasFirebaseConfig = typeof firebaseConfig !== 'undefined' && firebaseConfig.projectId;
+            const hasFirebaseApp = typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0;
+            
+            this.isLocalStorage = isFileProtocol || !hasFirebaseConfig || !hasFirebaseApp;
+            this.isRealtimeDB = !this.isLocalStorage && hasFirebaseConfig;
+            this.isFirestore = false;
+            
+            if (this.isLocalStorage) {
+                this.db = LocalStorageDB;
+                console.log('📱 Modo DEMO: Usando localStorage');
+            } else if (this.isRealtimeDB) {
+                this.db = RealtimeDatabaseService;
+                if (this.db.init()) {
+                    console.log('🔥 Usando Firebase Realtime Database');
+                } else {
+                    console.log('📱 Fallback a localStorage (Firebase no disponible)');
+                    this.db = LocalStorageDB;
+                    this.isLocalStorage = true;
+                }
+            } else {
+                this.db = LocalStorageDB;
+                console.log('📱 Usando localStorage (fallback)');
+            }
+        } catch (error) {
+            console.error('Error inicializando DatabaseService:', error);
             this.db = LocalStorageDB;
-            console.log('📱 Usando base de datos LOCAL (localStorage)');
-        } else if (this.isRealtimeDB) {
-            this.db = RealtimeDatabaseService;
-            console.log('🔥 Usando Firebase Realtime Database');
-        } else {
-            this.db = RealtimeDatabaseService; // Fallback a Realtime Database
-            console.log('⚙️ Usando Firebase (fallback)');
+            this.isLocalStorage = true;
         }
     }
 

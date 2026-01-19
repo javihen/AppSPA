@@ -163,7 +163,11 @@ class ClientasPage {
             document.getElementById('clientaId').value = '';
         }
         
+        // Mostrar modal con transición
         modal.classList.remove('hidden');
+        // Force reflow para que la animación funcione
+        void modal.offsetWidth;
+        document.body.style.overflow = 'hidden';
     }
 
     /**
@@ -172,6 +176,7 @@ class ClientasPage {
     static closeModal() {
         const modal = document.getElementById('clientasModal');
         modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
     }
 
     /**

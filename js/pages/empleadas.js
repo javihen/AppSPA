@@ -164,7 +164,11 @@ class EmpleadasPage {
         // Cargar servicios
         await this.loadServicios();
         
+        // Mostrar modal con transición
         modal.classList.remove('hidden');
+        // Force reflow para que la animación funcione
+        void modal.offsetWidth;
+        document.body.style.overflow = 'hidden';
     }
 
     /**
@@ -173,6 +177,7 @@ class EmpleadasPage {
     static closeModal() {
         const modal = document.getElementById('empleadasModal');
         modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
     }
 
     /**

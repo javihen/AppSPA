@@ -174,7 +174,11 @@ class AtencioneesPage {
         await this.loadEmpleadas();
         await this.loadServicios();
         
+        // Mostrar modal con transición
         modal.classList.remove('hidden');
+        // Force reflow para que la animación funcione
+        void modal.offsetWidth;
+        document.body.style.overflow = 'hidden';
     }
 
     /**
@@ -183,6 +187,7 @@ class AtencioneesPage {
     static closeModal() {
         const modal = document.getElementById('atencionesModal');
         modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
     }
 
     /**

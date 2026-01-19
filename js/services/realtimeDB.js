@@ -7,13 +7,36 @@ class RealtimeDatabaseService {
     
     // Referencias de base de datos
     static ref = null;
+    static isInitialized = false;
 
     static init() {
-        if (typeof db !== 'undefined' && db) {
+        try {
+            if (typeof firebase === 'undefined' || !firebase.apps.length) {
+                console.warn('⚠️ Firebase no está disponible aún');
+                return false;
+            }
+
+            if (!window.db) {
+                console.warn('⚠️ db no está disponible');
+                return false;
+            }
+
             this.ref = firebase.database().ref();
+            this.isInitialized = true;
             console.log('✅ Realtime Database inicializado');
-        } else {
-            console.error('❌ Firebase no está disponible');
+            return true;
+        } catch (error) {
+            console.error('❌ Error inicializando Realtime Database:', error);
+            return false;
+        }
+    }
+
+    static ensureInitialized() {
+        if (!this.isInitialized) {
+            this.init();
+        }
+        if (!this.ref) {
+            throw new Error('Realtime Database no está inicializado. Firebase no disponible.');
         }
     }
 
@@ -21,6 +44,7 @@ class RealtimeDatabaseService {
 
     static async crearClienta(datos) {
         try {
+            this.ensureInitialized();
             const id = this.generateId();
             const clientaRef = this.ref.child('clientas').child(id);
             

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Diagnóstico Firebase - SPA Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl font-bold text-center mb-8">🔧 Diagnóstico Firebase</h1>
+
+        <div class="space-y-6">
+            <!-- 1. Verificar conexión a internet -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-2xl font-bold mb-4">1️⃣ Conexión a Internet</h2>
+                <div id="internet-status" class="p-4 bg-yellow-50 rounded">
+                    <p>⏳ Comprobando...</p>
+                </div>
+            </div>
+
+            <!-- 2. Verificar Firebase SDK -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-2xl font-bold mb-4">2️⃣ Firebase SDK Loading</h2>
+                <div id="sdk-status" class="p-4 bg-yellow-50 rounded">
+                    <p>⏳ Comprobando...</p>
+                </div>
+            </div>
+
+            <!-- 3. Verificar config Firebase -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-2xl font-bold mb-4">3️⃣ Configuración Firebase</h2>
+                <div id="config-status" class="p-4 bg-yellow-50 rounded">
+                    <p>⏳ Comprobando...</p>
+                </div>
+            </div>
+
+            <!-- 4. Verificar inicialización -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-2xl font-bold mb-4">4️⃣ Firebase Inicialización</h2>
+                <div id="init-status" class="p-4 bg-yellow-50 rounded">
+                    <p>⏳ Esperando SDK...</p>
+                </div>
+            </div>
+
+            <!-- 5. Verificar servicios -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-2xl font-bold mb-4">5️⃣ Servicios Disponibles</h2>
+                <div id="services-status" class="p-4 bg-yellow-50 rounded">
+                    <p>⏳ Comprobando...</p>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-2xl font-bold mb-4">🎯 Acciones</h2>
+                <div class="space-y-3">
+                    <button onclick="reloadSDK()"
+                        class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700">
+                        🔄 Recargar Firebase SDK
+                    </button>
+                    <button onclick="testConnection()"
+                        class="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700">
+                        📡 Probar Conexión a Firebase
+                    </button>
+                    <button onclick="clearCache()"
+                        class="w-full bg-purple-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-purple-700">
+                        🗑️ Limpiar Cache Navegador
+                    </button>
+                    <a href="index.html"
+                        class="block w-full bg-pink-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-pink-700 text-center">
+                        🚀 Volver a Aplicación
+                    </a>
+                </div>
+            </div>
+
+            <!-- Soluciones -->
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded">
+                <h2 class="text-2xl font-bold mb-4">💡 Soluciones Rápidas</h2>
+                <div class="space-y-3 text-sm">
+                    <div>
+                        <strong>❌ Si todo está en rojo:</strong>
+                        <p>1. Verifica tu conexión a internet</p>
+                        <p>2. Clic en "Limpiar Cache Navegador"</p>
+                        <p>3. Presiona F5 para recargar</p>
+                        <p>4. Intenta de nuevo</p>
+                    </div>
+                    <hr class="my-3">
+                    <div>
+                        <strong>⚠️ Si Firebase SDK no carga:</strong>
+                        <p>1. Clic en "Recargar Firebase SDK"</p>
+                        <p>2. Espera 5 segundos</p>
+                        <p>3. Verifica el estado</p>
+                    </div>
+                    <hr class="my-3">
+                    <div>
+                        <strong>🔌 Si conexión falla:</strong>
+                        <p>1. Asegúrate de tener internet</p>
+                        <p>2. Intenta con otro navegador</p>
+                        <p>3. Verifica firewall/proxy</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Console Log -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-2xl font-bold mb-4">📋 Log de Consola</h2>
+                <div id="console-log"
+                    class="p-4 bg-gray-900 text-green-400 font-mono text-sm rounded h-64 overflow-y-auto whitespace-pre-wrap">
+                    Abriendo consola...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+
+    <script>
+        const logs = [];
+
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const log = `[${timestamp}] ${message}`;
+            logs.push(log);
+            console.log(message);
+            updateConsoleLog();
+        }
+
+        function updateConsoleLog() {
+            const logDiv = document.getElementById('console-log');
+            logDiv.innerHTML = logs.join('\n');
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function updateStatus(elementId, html, status = 'loading') {
+            const elem = document.getElementById(elementId);
+            elem.innerHTML = html;
+            elem.className = 'p-4 rounded ' + {
+                'loading': 'bg-yellow-50 border-l-4 border-yellow-500',
+                'success': 'bg-green-50 border-l-4 border-green-500',
+                'error': 'bg-red-50 border-l-4 border-red-500',
+                'warning': 'bg-orange-50 border-l-4 border-orange-500'
+            }[status];
+        }
+
+        // 1. Verificar conexión a internet
+        addLog('🌐 Iniciando diagnóstico de Firebase...');
+        updateStatus('internet-status', '⏳ Verificando conexión a internet...', 'loading');
+
+        fetch('https://www.gstatic.com/firebase/resources/app-check/release-notes.txt')
+            .then(() => {
+                addLog('✅ Conexión a internet OK');
+                updateStatus('internet-status',
+                    '✅ Conexión a internet: <strong>FUNCIONA</strong><br>Puedes acceder a CDN de Google', 'success');
+            })
+            .catch((error) => {
+                addLog('❌ Sin conexión a internet: ' + error.message);
+                updateStatus('internet-status',
+                    '❌ Error de conexión: <strong>' + error.message + '</strong><br>Verifica tu conexión de internet', 'error');
+            });
+
+        // 2. Verificar Firebase SDK
+        addLog('📦 Verificando Firebase SDK...');
+        setTimeout(() => {
+            if (typeof firebase !== 'undefined') {
+                addLog('✅ Firebase SDK cargado');
+                updateStatus('sdk-status',
+                    '✅ Firebase SDK: <strong>CARGADO</strong><br>Versión: ' + firebase.SDK_VERSION +
+                    '<br>Apps inicializadas: ' + firebase.apps.length, 'success');
+
+                // 3. Verificar configuración
+                addLog('🔑 Verificando configuración Firebase...');
+                const firebaseConfig = {
+                    apiKey: "AIzaSyD04Rshct4LNMV1PBJRoPEwVupo5xie1Pc",
+                    authDomain: "appspa-cf14d.firebaseapp.com",
+                    projectId: "appspa-cf14d",
+                    storageBucket: "appspa-cf14d.firebasestorage.app",
+                    messagingSenderId: "828208343990",
+                    appId: "1:828208343990:web:2336177f5cc7595b0a6f17",
+                    databaseURL: "https://appspa-cf14d.firebaseio.com"
+                };
+
+                if (firebaseConfig.apiKey && firebaseConfig.projectId) {
+                    addLog('✅ Configuración Firebase válida');
+                    updateStatus('config-status',
+                        '✅ Configuración: <strong>VÁLIDA</strong><br>' +
+                        'Proyecto: ' + firebaseConfig.projectId + '<br>' +
+                        'DB URL: ' + firebaseConfig.databaseURL, 'success');
+
+                    // 4. Inicializar Firebase
+                    addLog('🚀 Inicializando Firebase...');
+                    try {
+                        if (!firebase.apps.length) {
+                            firebase.initializeApp(firebaseConfig);
+                            addLog('✅ Firebase inicializado exitosamente');
+                            updateStatus('init-status',
+                                '✅ Inicialización: <strong>EXITOSA</strong><br>Firebase está listo para usar', 'success');
+                        } else {
+                            addLog('ℹ️ Firebase ya estaba inicializado');
+                            updateStatus('init-status',
+                                'ℹ️ Inicialización: <strong>YA INICIADO</strong><br>Firebase fue inicializado previamente', 'warning');
+                        }
+
+                        // 5. Verificar servicios
+                        addLog('🔌 Verificando servicios...');
+                        try {
+                            const auth = firebase.auth();
+                            const db = firebase.database();
+                            const firestore = firebase.firestore();
+
+                            addLog('✅ Auth disponible');
+                            addLog('✅ Realtime Database disponible');
+                            addLog('✅ Firestore disponible');
+
+                            updateStatus('services-status',
+                                '✅ Servicios Disponibles:<br>' +
+                                '  ✅ Authentication (Auth)<br>' +
+                                '  ✅ Realtime Database<br>' +
+                                '  ✅ Firestore', 'success');
+
+                            // Todo está OK
+                            addLog('🎉 Firebase está completamente funcional!');
+                        } catch (error) {
+                            addLog('❌ Error con servicios: ' + error.message);
+                            updateStatus('services-status',
+                                '❌ Error: <strong>' + error.message + '</strong>', 'error');
+                        }
+                    } catch (error) {
+                        addLog('❌ Error inicializando Firebase: ' + error.message);
+                        updateStatus('init-status',
+                            '❌ Error: <strong>' + error.message + '</strong><br>Verifica la configuración', 'error');
+                    }
+                } else {
+                    addLog('❌ Configuración Firebase inválida');
+                    updateStatus('config-status',
+                        '❌ Configuración: <strong>INVÁLIDA</strong><br>Faltan credenciales', 'error');
+                }
+            } else {
+                addLog('❌ Firebase SDK no está cargado');
+                updateStatus('sdk-status',
+                    '❌ Firebase SDK: <strong>NO CARGADO</strong><br>Los scripts no se cargaron correctamente', 'error');
+                updateStatus('init-status',
+                    '⏹️ Inicialización: <strong>CANCELADA</strong><br>Esperando SDK...', 'warning');
+            }
+        }, 2000);
+
+        // Funciones de acción
+        function reloadSDK() {
+            addLog('🔄 Reintentando cargar Firebase SDK...');
+
+            // Crear nuevo script dinámicamente
+            const scripts = [
+                'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js',
+                'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js',
+                'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js',
+                'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js'
+            ];
+
+            let loaded = 0;
+            scripts.forEach((src, index) => {
+                const script = document.createElement('script');
+                script.src = src + '?t=' + Date.now(); // Agregar timestamp para evitar cache
+                script.onload = () => {
+                    loaded++;
+                    addLog(`✅ Script ${index + 1}/4 cargado: ${src.split('/').pop()}`);
+                    if (loaded === scripts.length) {
+                        addLog('✅ Todos los scripts recargados. Actualiza la página.');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    }
+                };
+                script.onerror = () => {
+                    addLog(`❌ Error cargando: ${src}`);
+                };
+                document.head.appendChild(script);
+            });
+        }
+
+        function testConnection() {
+            addLog('📡 Probando conexión a Firebase...');
+            updateStatus('init-status', '⏳ Probando conexión...', 'loading');
+
+            setTimeout(() => {
+                if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+                    try {
+                        const db = firebase.database();
+                        db.ref('.info/connected').on('value', (snapshot) => {
+                            if (snapshot.val() === true) {
+                                addLog('✅ Conectado a Firebase Realtime Database');
+                                updateStatus('init-status',
+                                    '✅ Conexión: <strong>ESTABLECIDA</strong><br>Conectado a Firebase', 'success');
+                            } else {
+                                addLog('❌ Desconectado de Firebase');
+                                updateStatus('init-status',
+                                    '❌ Desconectado de Firebase<br>Verifica internet', 'error');
+                            }
+                        });
+                    } catch (error) {
+                        addLog('❌ Error probando conexión: ' + error.message);
+                    }
+                } else {
+                    addLog('⚠️ Firebase no está inicializado');
+                    addLog('Acción: Clic en "Recargar Firebase SDK"');
+                }
+            }, 500);
+        }
+
+        function clearCache() {
+            addLog('🗑️ Limpiando cache...');
+
+            // Limpiar localStorage
+            localStorage.clear();
+            addLog('✅ LocalStorage limpio');
+
+            // Limpiar sessionStorage
+            sessionStorage.clear();
+            addLog('✅ SessionStorage limpio');
+
+            // Indicar que limpiar cache del navegador
+            addLog('💡 Ahora presiona: Ctrl+Shift+Delete para limpiar cache del navegador');
+            addLog('Y luego recarga esta página (F5)');
+
+            updateStatus('services-status',
+                '✅ Cache limpiado<br>Presiona Ctrl+Shift+Delete para limpiar cache del navegador<br>Luego recarga (F5)', 'success');
+        }
+    </script>
+</body>
+
+</html>

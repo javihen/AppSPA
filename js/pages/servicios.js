@@ -165,7 +165,11 @@ class ServiciosPage {
             document.getElementById('servicioId').value = '';
         }
         
+        // Mostrar modal con transición
         modal.classList.remove('hidden');
+        // Force reflow para que la animación funcione
+        void modal.offsetWidth;
+        document.body.style.overflow = 'hidden';
     }
 
     /**
@@ -174,6 +178,7 @@ class ServiciosPage {
     static closeModal() {
         const modal = document.getElementById('serviciosModal');
         modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
     }
 
     /**

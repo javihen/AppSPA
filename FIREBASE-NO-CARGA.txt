@@ -1,0 +1,214 @@
+🔧 FIREBASE SDK NO CARGA - SOLUCIÓN
+===================================
+
+PROBLEMA:
+─────────
+El Firebase SDK no está cargando correctamente
+
+SOLUCIONES (EN ORDEN DE EFECTIVIDAD):
+─────────────────────────────────────
+
+┌─────────────────────────────────────────────┐
+│ 1️⃣ SOLUCIÓN MÁS RÁPIDA (Recomendado)      │
+└─────────────────────────────────────────────┘
+
+Abre: diagnostico-firebase.html (doble click)
+
+Esto te dará:
+✅ Diagnóstico automático
+✅ Estado de cada componente
+✅ Botones de acción
+✅ Log detallado de errores
+
+Sigue las instrucciones en pantalla.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────┐
+│ 2️⃣ SOLUCIONES MANUALES                     │
+└─────────────────────────────────────────────┘
+
+OPCIÓN A: Limpiar Cache del Navegador
+──────────────────────────────────────
+1. Presiona: Ctrl+Shift+Delete
+2. Selecciona "Todas" o "Últimas 24 horas"
+3. Marca: ✅ Cookies ✅ Caché
+4. Clic: Limpiar datos
+5. Cierra el navegador completamente
+6. Abre de nuevo: index.html
+7. ✅ Debería funcionar
+
+OPCIÓN B: Recargar con Cache Limpio
+────────────────────────────────────
+1. Abre: index.html
+2. Presiona: Ctrl+F5 (fuerza reload sin cache)
+3. Espera a que cargue completamente
+4. ✅ Debería funcionar
+
+OPCIÓN C: Usar Modo Incógnito
+──────────────────────────────
+1. Abre navegador en Modo Incógnito/Privado:
+   - Chrome: Ctrl+Shift+N
+   - Firefox: Ctrl+Shift+P
+   - Safari: Cmd+Shift+N
+   - Edge: Ctrl+Shift+InPriv
+2. En la ventana privada, abre: index.html
+3. ✅ Si funciona aquí, es un problema de cache
+
+OPCIÓN D: Cambiar Navegador
+────────────────────────────
+1. Intenta con Chrome (si usas Firefox)
+2. O Firefox (si usas Chrome)
+3. O Safari/Edge
+4. ✅ Verifica si funciona en otro navegador
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────┐
+│ 3️⃣ VERIFICAR CONEXIÓN A INTERNET           │
+└─────────────────────────────────────────────┘
+
+Si ninguna solución anterior funciona:
+
+1. ✅ Verifica que tienes internet
+   └─ Abre www.google.com
+   └─ Si carga, tienes internet
+
+2. ✅ Verifica que CDN de Google es accesible
+   └─ Abre: https://www.gstatic.com
+   └─ Si carga, CDN funciona
+
+3. ✅ Si usas VPN o proxy
+   └─ Intenta sin VPN
+   └─ O agrega excepciones para Firebase
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────┐
+│ 4️⃣ VERIFICAR EN CONSOLA (F12)              │
+└─────────────────────────────────────────────┘
+
+Abre DevTools (F12) → Consola
+
+Busca mensajes como:
+
+❌ "Failed to load resource"
+   → Problema de conexión a CDN
+
+❌ "CORS error"
+   → Problema de seguridad del navegador
+
+❌ "Firebase SDK no está cargado"
+   → Scripts no se cargaron
+
+❌ "net::ERR_BLOCKED_BY_CLIENT"
+   → Bloqueado por extension (AdBlock, etc)
+
+Si ves alguno:
+   1. Nota el error exacto
+   2. Intenta desactivar extensiones
+   3. O prueba en modo incógnito
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────┐
+│ 5️⃣ SI TIENES EXTENSIONES BLOQUEADORAS     │
+└─────────────────────────────────────────────┘
+
+Extensiones que pueden bloquear Firebase:
+• AdBlock
+• uBlock Origin
+• Privacy Badger
+• Ghostery
+• DuckDuckGo Privacy
+
+SOLUCIÓN:
+1. Desactiva la extensión temporalmente
+2. Recarga la página (F5)
+3. ✅ Debería funcionar
+
+Para permitir Firebase permanentemente:
+1. Settings de la extensión
+2. Busca: gstatic.com o firebase
+3. Agrega a "whitelist" o "allow"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────┐
+│ 6️⃣ SOLUCIÓN NUCLEAR (Última Opción)       │
+└─────────────────────────────────────────────┘
+
+Si nada funciona:
+
+OPCIÓN 1: Reinstalar Navegador
+  1. Desinstala el navegador completamente
+  2. Reinicia tu PC
+  3. Instala de nuevo
+  4. Prueba
+
+OPCIÓN 2: Usar Localhost con Python
+  1. Abre terminal en: e:\proyectoWeb\AppSPA
+  2. Escribe: python -m http.server 8000
+  3. Abre: http://localhost:8000/index.html
+  4. ✅ Probablemente funcione aquí
+
+OPCIÓN 3: Usar Firebase en Offline
+  1. Abre index.html
+  2. Verifica que mode sea "localStorage"
+  3. Los datos se guardan localmente
+  4. ✅ App funciona igual sin Firebase
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 RESUMEN DE PASOS:
+
+1. ✅ Abre: diagnostico-firebase.html
+2. ✅ Revisa qué está fallando
+3. ✅ Intenta soluciones en orden
+4. ✅ Si problema persiste, usa localStorage
+
+PRIORIDAD:
+┌─────────────────────┐
+│ 1. Ctrl+Shift+Delete│  (Limpiar cache)
+│ 2. Ctrl+F5          │  (Reload duro)
+│ 3. Modo incógnito   │  (Prueba aislada)
+│ 4. Otro navegador   │  (Chrome/Firefox)
+│ 5. localhost        │  (Python server)
+│ 6. localStorage     │  (Modo demo)
+└─────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❓ PREGUNTAS FRECUENTES:
+
+P: ¿Funciona sin Firebase?
+R: Sí, en modo localStorage (demo local)
+
+P: ¿Puedo usar la app sin internet?
+R: Sí, con localStorage los datos se guardan localmente
+
+P: ¿Cómo sé si estoy en modo Firebase o localStorage?
+R: Busca el banner azul arriba si es demo mode
+
+P: ¿Puedo cambiar de modo?
+R: Sí, sigue CONFIGURAR_FIREBASE.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📞 DOCUMENTACIÓN RELACIONADA:
+
+• diagnostico-firebase.html      ← Herramienta de diagnóstico
+• CONFIGURAR_FIREBASE.md         ← Setup completo
+• test-firebase.html             ← Prueba conexión
+• MODALES_ACTUALIZADO.md         ← Si también hay problema de modales
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 PRÓXIMO PASO:
+
+Abre: diagnostico-firebase.html
+
+(doble click)
+
+═════════════════════════════════════════════
+Hecho: 19 de enero de 2026
