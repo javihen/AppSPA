@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba Firebase Realtime Database</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+    <div class="max-w-2xl mx-auto p-8">
+        <h1 class="text-4xl font-bold text-center mb-8 text-blue-600">🧪 Prueba de Conexión Firebase</h1>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 space-y-4">
+
+            <div id="test-firebase" class="p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
+                <h3 class="font-bold">Firebase SDK</h3>
+                <p id="firebase-status" class="text-sm">Cargando...</p>
+            </div>
+
+            <div id="test-auth" class="p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
+                <h3 class="font-bold">Firebase Auth</h3>
+                <p id="auth-status" class="text-sm">Esperando...</p>
+            </div>
+
+            <div id="test-db" class="p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
+                <h3 class="font-bold">Realtime Database</h3>
+                <p id="db-status" class="text-sm">Esperando...</p>
+            </div>
+
+            <div id="test-config" class="p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
+                <h3 class="font-bold">Configuración</h3>
+                <p id="config-status" class="text-sm font-mono text-xs">Verificando...</p>
+            </div>
+
+            <div id="result" class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded hidden">
+                <h3 class="font-bold text-lg mb-2">✅ Resultado</h3>
+                <p id="result-text" class="text-sm"></p>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center">
+            <button onclick="runTests()"
+                class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700">
+                🚀 Ejecutar Pruebas
+            </button>
+        </div>
+
+        <div class="mt-8 text-center text-sm text-gray-600">
+            <p>Abre la consola del navegador (F12 > Console) para ver detalles técnicos</p>
+        </div>
+    </div>
+
+    <script src="js/config/firebase.js"></script>
+    <script>
+        function updateStatus(elementId, status, success = false) {
+            const elem = document.getElementById(elementId);
+            elem.textContent = status;
+            elem.parentElement.classList.remove('bg-yellow-50', 'bg-red-50', 'bg-green-50');
+
+            if (success === true) {
+                elem.parentElement.classList.add('bg-green-50', 'border-green-500');
+            } else if (success === false) {
+                elem.parentElement.classList.add('bg-red-50', 'border-red-500');
+            } else {
+                elem.parentElement.classList.add('bg-yellow-50', 'border-yellow-500');
+            }
+        }
+
+        function showResult(text) {
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('result-text').textContent = text;
+        }
+
+        async function runTests() {
+            console.log('=== INICIANDO PRUEBAS ===');
+
+            // Prueba 1: Firebase SDK
+            if (typeof firebase !== 'undefined') {
+                updateStatus('firebase-status', '✅ Firebase SDK cargado correctamente', true);
+                console.log('✅ Firebase SDK:', firebase.SDK_VERSION);
+            } else {
+                updateStatus('firebase-status', '❌ Firebase SDK no se cargó', false);
+                showResult('❌ ERROR: Firebase SDK no disponible');
+                return;
+            }
+
+            // Prueba 2: Firebase Config
+            if (typeof firebaseConfig !== 'undefined' && firebaseConfig.projectId) {
+                updateStatus('config-status', `✅ Proyecto: ${firebaseConfig.projectId}`, true);
+                console.log('✅ Config:', firebaseConfig.projectId);
+            } else {
+                updateStatus('config-status', '❌ firebaseConfig no está configurado', false);
+                showResult('❌ ERROR: Falta configuración de Firebase');
+                return;
+            }
+
+            // Prueba 3: Firebase App
+            try {
+                const app = firebase.app();
+                updateStatus('firebase-status', '✅ Firebase inicializado', true);
+                console.log('✅ Firebase App:', app.name);
+            } catch (error) {
+                updateStatus('firebase-status', '❌ Error inicializando Firebase: ' + error.message, false);
+                console.error('❌ Error:', error);
+                return;
+            }
+
+            // Prueba 4: Firebase Auth
+            try {
+                const auth = firebase.auth();
+                updateStatus('auth-status', '✅ Authentication inicializado', true);
+                console.log('✅ Auth:', auth.currentUser ? 'Usuario activo' : 'Sin usuario');
+            } catch (error) {
+                updateStatus('auth-status', '❌ Error en Auth: ' + error.message, false);
+                console.error('❌ Error:', error);
+            }
+
+            // Prueba 5: Realtime Database
+            try {
+                const db = firebase.database();
+                updateStatus('db-status', '✅ Realtime Database disponible', true);
+                console.log('✅ Database URL:', firebaseConfig.databaseURL);
+
+                // Intentar conexión
+                const testRef = db.ref('.info/connected');
+                testRef.on('value', (snapshot) => {
+                    if (snapshot.val() === true) {
+                        updateStatus('db-status', '✅ Conectado a Realtime Database', true);
+                        console.log('✅ Conexión exitosa a Realtime Database');
+                    } else {
+                        updateStatus('db-status', '⚠️ No conectado a Realtime Database', null);
+                        console.warn('⚠️ No conectado');
+                    }
+                });
+
+                // Mostrar resultado final
+                setTimeout(() => {
+                    showResult('✅ Todas las pruebas pasaron. Firebase Realtime Database está correctamente configurado.');
+                }, 500);
+
+            } catch (error) {
+                updateStatus('db-status', '❌ Error en DB: ' + error.message, false);
+                console.error('❌ Error:', error);
+                showResult('❌ ERROR: ' + error.message);
+            }
+        }
+
+        // Ejecutar pruebas automáticamente al cargar
+        window.addEventListener('load', () => {
+            console.log('Página cargada. Haz click en "Ejecutar Pruebas" o espera...');
+            setTimeout(runTests, 2000); // Esperar 2 segundos para que cargue todo
+        });
+    </script>
+</body>
+
+</html>

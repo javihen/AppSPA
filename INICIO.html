@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPA Manager - Servidor Local</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 60px;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #ec4899;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ec4899 0%, #a78bfa 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #333;
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #ec4899;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .code {
+            background: #1f2937;
+            color: #10b981;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        .status {
+            font-size: 14px;
+            color: #666;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎉 SPA Manager</h1>
+        <p style="font-size: 18px; color: #666; margin-bottom: 30px;">
+            Sistema moderno de gestión para spas
+        </p>
+
+        <div class="info-box">
+            <strong>✅ La aplicación está lista para usar</strong>
+            <p style="margin-top: 10px;">
+                Abre <strong>index.html</strong> en tu navegador para iniciar la aplicación.
+            </p>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-primary" onclick="openApp()">
+                🚀 Abrir Aplicación
+            </button>
+            <button class="btn-secondary" onclick="viewDocs()">
+                📖 Ver Documentación
+            </button>
+        </div>
+
+        <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #eee;">
+            <h3 style="color: #333; margin-bottom: 15px;">🔧 Opciones de Ejecución</h3>
+
+            <div class="info-box" style="text-align: left;">
+                <strong>Opción 1: Doble Click (Recomendado)</strong>
+                <p>Simplemente haz doble click en <strong>index.html</strong></p>
+            </div>
+
+            <div class="info-box" style="text-align: left;">
+                <strong>Opción 2: Servidor Python</strong>
+                <p>Ejecuta en la carpeta del proyecto:</p>
+                <div class="code">python -m http.server 8000</div>
+                <p>Luego abre: <strong>http://localhost:8000</strong></p>
+            </div>
+
+            <div class="info-box" style="text-align: left;">
+                <strong>Opción 3: Node.js HTTP Server</strong>
+                <p>Si tienes Node.js instalado:</p>
+                <div class="code">npx http-server</div>
+            </div>
+
+            <div class="info-box" style="text-align: left;">
+                <strong>Opción 4: Live Server (VS Code)</strong>
+                <p>Instala la extensión "Live Server" y haz click derecho en index.html → Open with Live Server</p>
+            </div>
+        </div>
+
+        <div class="status">
+            <p>💡 En cualquier caso, los datos se guardan localmente en tu navegador</p>
+            <p>No necesitas configurar nada - ¡Todo funciona al instante!</p>
+        </div>
+    </div>
+
+    <script>
+        function openApp() {
+            // Abrir index.html
+            window.location.href = 'index.html';
+        }
+
+        function viewDocs() {
+            // Mostrar instrucciones
+            alert(`
+📖 DOCUMENTACIÓN DISPONIBLE
+
+1. COMIENZA_AQUI.md - Guía rápida de inicio
+2. README.md - Documentación completa
+3. PRIMEROS_PASOS.md - Instalación paso a paso
+4. DOCUMENTACION_TECNICA.md - Arquitectura técnica
+5. REFERENCIA_RAPIDA.md - Índice de funciones
+
+Abre cualquiera de estos archivos con un editor de texto.
+            `);
+        }
+    </script>
+</body>
+
+</html>

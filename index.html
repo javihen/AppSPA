@@ -28,18 +28,38 @@
     <!-- Contenedor principal -->
     <div id="app"></div>
 
+    <!-- Mensaje de error fallback -->
+    <noscript>
+        <div style="padding: 40px; text-align: center; font-family: Arial, sans-serif;">
+            <h1 style="color: #ec4899; margin-bottom: 20px;">⚠️ JavaScript está deshabilitado</h1>
+            <p>Esta aplicación requiere JavaScript habilitado.</p>
+            <p>Por favor, habilita JavaScript en tu navegador para continuar.</p>
+        </div>
+    </noscript>
+
     <!-- Scripts -->
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
 
     <!-- Configuración y módulos -->
     <script src="js/config/firebase.js"></script>
     <script src="js/utils/helpers.js"></script>
+    <script src="js/services/localStorageDB.js"></script>
+    <script src="js/services/realtimeDB.js"></script>
     <script src="js/services/auth.js"></script>
     <script src="js/services/database.js"></script>
     <script src="js/services/calculations.js"></script>
+    <script src="js/pages/login.js"></script>
+    <script src="js/pages/signup.js"></script>
+    <script src="js/pages/dashboard.js"></script>
+    <script src="js/pages/clientas.js"></script>
+    <script src="js/pages/empleadas.js"></script>
+    <script src="js/pages/servicios.js"></script>
+    <script src="js/pages/atenciones.js"></script>
+    <script src="js/pages/reportes.js"></script>
     <script src="js/app.js"></script>
 </body>
 

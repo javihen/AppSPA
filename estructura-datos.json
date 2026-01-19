@@ -1,0 +1,200 @@
+{
+  "estructura_datos": {
+    "usuarios": {
+      "descripcion": "Usuarios del sistema (admin)",
+      "campos": {
+        "uid": "ID único del usuario",
+        "email": "Email del usuario",
+        "rol": "Siempre 'admin'",
+        "fechaCreacion": "Timestamp de creación",
+        "activo": "boolean"
+      },
+      "ejemplo": {
+        "uid": "user_123456",
+        "email": "demo@spa.com",
+        "rol": "admin",
+        "fechaCreacion": "2026-01-18T10:30:00",
+        "activo": true
+      }
+    },
+    "servicios": {
+      "descripcion": "Servicios que ofrece el SPA",
+      "campos": {
+        "id": "ID único",
+        "nombre": "Nombre del servicio",
+        "precio": "Precio en pesos",
+        "categoria": "Categoría (masajes, faciales, etc)",
+        "duracion": "Duración en minutos",
+        "descripcion": "Descripción",
+        "activo": "boolean",
+        "fechaCreacion": "Timestamp"
+      },
+      "ejemplo": {
+        "id": "serv_001",
+        "nombre": "Masaje Relajante",
+        "precio": 500,
+        "categoria": "masajes",
+        "duracion": 60,
+        "descripcion": "Masaje completo de relajación",
+        "activo": true,
+        "fechaCreacion": "2026-01-18T10:00:00"
+      }
+    },
+    "empleadas": {
+      "descripcion": "Personal del SPA",
+      "campos": {
+        "id": "ID único",
+        "nombre": "Nombre completo",
+        "puesto": "Puesto (Masajista, Esteticien, etc)",
+        "telefono": "Teléfono de contacto",
+        "email": "Email",
+        "porcentajePorServicio": "Objeto con comisiones por servicio",
+        "activa": "boolean",
+        "fechaCreacion": "Timestamp"
+      },
+      "ejemplo": {
+        "id": "emp_001",
+        "nombre": "María García",
+        "puesto": "Masajista",
+        "telefono": "555-0001",
+        "email": "maria@spa.com",
+        "porcentajePorServicio": {
+          "serv_001": 35,
+          "serv_002": 40,
+          "serv_003": 30
+        },
+        "activa": true,
+        "fechaCreacion": "2026-01-18T09:00:00"
+      }
+    },
+    "clientas": {
+      "descripcion": "Clientes del SPA",
+      "campos": {
+        "id": "ID único",
+        "nombre": "Nombre completo",
+        "telefono": "Teléfono",
+        "email": "Email",
+        "tipoServicio": "Tipo de servicio preferido",
+        "activa": "boolean",
+        "fechaCreacion": "Timestamp"
+      },
+      "ejemplo": {
+        "id": "cli_001",
+        "nombre": "Laura Sánchez",
+        "telefono": "555-1001",
+        "email": "laura@mail.com",
+        "tipoServicio": "Masajes",
+        "activa": true,
+        "fechaCreacion": "2026-01-18T08:00:00"
+      }
+    },
+    "atenciones": {
+      "descripcion": "Registro de servicios realizados (core del negocio)",
+      "campos": {
+        "id": "ID único",
+        "idClienta": "Referencia a clienta",
+        "idEmpleada": "Referencia a empleada",
+        "servicios": "Array de servicios realizados",
+        "total": "Total pagado",
+        "fecha": "Fecha/hora de la atención",
+        "notas": "Notas adicionales",
+        "activa": "boolean",
+        "fechaCreacion": "Timestamp"
+      },
+      "ejemplo": {
+        "id": "aten_001",
+        "idClienta": "cli_001",
+        "idEmpleada": "emp_001",
+        "servicios": [
+          {
+            "id": "serv_001",
+            "nombre": "Masaje Relajante",
+            "precio": 500
+          },
+          {
+            "id": "serv_003",
+            "nombre": "Facial Básico",
+            "precio": 350
+          }
+        ],
+        "total": 850,
+        "fecha": "2026-01-18T14:30:00",
+        "notas": "Cliente satisfecha",
+        "activa": true,
+        "fechaCreacion": "2026-01-18T14:35:00"
+      }
+    }
+  },
+  "calculos_importantes": {
+    "comision_empleada": {
+      "formula": "(precio_servicio * porcentaje) / 100",
+      "ejemplo": "(500 * 35) / 100 = 175 pesos",
+      "descripcion": "Comisión que gana la empleada por cada servicio"
+    },
+    "ingreso_diario": {
+      "formula": "suma de todos los totales de atenciones del día",
+      "descripcion": "Total de ingresos generados en un día"
+    },
+    "ingreso_mensual": {
+      "formula": "suma de ingresos diarios del mes",
+      "descripcion": "Total de ingresos generados en el mes"
+    },
+    "ganancias_por_empleada": {
+      "formula": "suma de comisiones por servicio en el período",
+      "descripcion": "Total de ganancias generadas por la empleada"
+    }
+  },
+  "funciones_principales": {
+    "DatabaseService": {
+      "descripcion": "Gestor inteligente de base de datos",
+      "metodos": [
+        "crearClienta(datos)",
+        "obtenerClientas()",
+        "actualizarClienta(id, datos)",
+        "eliminarClienta(id)",
+        "crearEmpleada(datos)",
+        "obtenerEmpleadas()",
+        "actualizarEmpleada(id, datos)",
+        "eliminarEmpleada(id)",
+        "crearServicio(datos)",
+        "obtenerServicios()",
+        "actualizarServicio(id, datos)",
+        "eliminarServicio(id)",
+        "crearAtencion(datos)",
+        "obtenerAtenciones()",
+        "obtenerAtencionesPorRango(inicio, fin)",
+        "actualizarAtencion(id, datos)",
+        "eliminarAtencion(id)"
+      ]
+    },
+    "CalculationService": {
+      "descripcion": "Cálculos de ingresos y comisiones",
+      "metodos": [
+        "calcularIngresosPorDia(fecha)",
+        "calcularIngresosPorMes(año, mes)",
+        "calcularGananciasPorEmpleada(idEmpleada, fecha)",
+        "calcularComision(precio, porcentaje)",
+        "obtenerReporteMensual(año, mes)",
+        "obtenerDatosGraficoIngresosMensuales(año)"
+      ]
+    },
+    "AuthService": {
+      "descripcion": "Autenticación y sesiones",
+      "metodos": [
+        "signup(email, password, adminCode)",
+        "login(email, password)",
+        "logout()",
+        "getCurrentUser()",
+        "getUserData(uid)",
+        "onAuthStateChanged(callback)"
+      ]
+    }
+  },
+  "notas": {
+    "localStorage": "Los datos se guardan en localStorage del navegador en modo demo",
+    "firebase": "En producción, se puede cambiar a Firebase Firestore",
+    "seguridad": "En modo demo, las contraseñas se hashean localmente (no es para producción)",
+    "datos_prueba": "Se crean automáticamente la primera vez que se abre la app",
+    "limpiar_datos": "Se pueden limpiar manualmente desde localStorage en DevTools"
+  }
+}

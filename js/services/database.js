@@ -1,323 +1,145 @@
 /**
- * SERVICIOS DE BASE DE DATOS
- * Maneja todas las operaciones CRUD con Firestore
+ * GESTOR DE BASE DE DATOS INTELIGENTE
+ * Detecta automáticamente si usa Realtime Database, Firestore o localStorage
+ * - Con Firebase configurado: usa Realtime Database
+ * - En protocolo file:// o sin Firebase: usa localStorage
  */
 
 class DatabaseService {
     
+    static isLocalStorage = false;
+    static isRealtimeDB = false;
+    static isFirestore = false;
+    static db = null;
+
+    static init() {
+        // Verificar si debe usar localStorage
+        const isFileProtocol = window.location.protocol === 'file:';
+        const hasFirebaseConfig = typeof firebaseConfig !== 'undefined' && firebaseConfig.projectId;
+        
+        this.isLocalStorage = isFileProtocol && !hasFirebaseConfig;
+        this.isRealtimeDB = !this.isLocalStorage && hasFirebaseConfig && typeof db !== 'undefined';
+        this.isFirestore = !this.isLocalStorage && !this.isRealtimeDB && hasFirebaseConfig;
+        
+        if (this.isLocalStorage) {
+            this.db = LocalStorageDB;
+            console.log('📱 Usando base de datos LOCAL (localStorage)');
+        } else if (this.isRealtimeDB) {
+            this.db = RealtimeDatabaseService;
+            console.log('🔥 Usando Firebase Realtime Database');
+        } else {
+            this.db = RealtimeDatabaseService; // Fallback a Realtime Database
+            console.log('⚙️ Usando Firebase (fallback)');
+        }
+    }
+
     // ==================== CLIENTAS ====================
-    
-    /**
-     * Crear nueva clienta
-     */
+
     static async crearClienta(datos) {
-        try {
-            const docRef = await db.collection('clientas').add({
-                ...datos,
-                fechaCreacion: new Date(),
-                activa: true
-            });
-            return docRef.id;
-        } catch (error) {
-            throw new Error(`Error creando clienta: ${error.message}`);
-        }
+        return await this.db.crearClienta(datos);
     }
 
-    /**
-     * Obtener todas las clientas
-     */
     static async obtenerClientas() {
-        try {
-            const snapshot = await db.collection('clientas')
-                .where('activa', '==', true)
-                .get();
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-        } catch (error) {
-            throw new Error(`Error obteniendo clientas: ${error.message}`);
-        }
+        return await this.db.obtenerClientas();
     }
 
-    /**
-     * Obtener clienta por ID
-     */
     static async obtenerClienta(id) {
-        try {
-            const doc = await db.collection('clientas').doc(id).get();
-            return doc.exists ? { id: doc.id, ...doc.data() } : null;
-        } catch (error) {
-            throw new Error(`Error obteniendo clienta: ${error.message}`);
-        }
+        return await this.db.obtenerClienta(id);
     }
 
-    /**
-     * Actualizar clienta
-     */
     static async actualizarClienta(id, datos) {
-        try {
-            await db.collection('clientas').doc(id).update(datos);
-        } catch (error) {
-            throw new Error(`Error actualizando clienta: ${error.message}`);
-        }
+        return await this.db.actualizarClienta(id, datos);
     }
 
-    /**
-     * Eliminar clienta (soft delete)
-     */
     static async eliminarClienta(id) {
-        try {
-            await db.collection('clientas').doc(id).update({ activa: false });
-        } catch (error) {
-            throw new Error(`Error eliminando clienta: ${error.message}`);
-        }
+        return await this.db.eliminarClienta(id);
     }
 
     // ==================== EMPLEADAS ====================
 
-    /**
-     * Crear nueva empleada
-     */
     static async crearEmpleada(datos) {
-        try {
-            const docRef = await db.collection('empleadas').add({
-                ...datos,
-                fechaCreacion: new Date(),
-                activa: true
-            });
-            return docRef.id;
-        } catch (error) {
-            throw new Error(`Error creando empleada: ${error.message}`);
-        }
+        return await this.db.crearEmpleada(datos);
     }
 
-    /**
-     * Obtener todas las empleadas
-     */
     static async obtenerEmpleadas() {
-        try {
-            const snapshot = await db.collection('empleadas')
-                .where('activa', '==', true)
-                .get();
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-        } catch (error) {
-            throw new Error(`Error obteniendo empleadas: ${error.message}`);
-        }
+        return await this.db.obtenerEmpleadas();
     }
 
-    /**
-     * Obtener empleada por ID
-     */
     static async obtenerEmpleada(id) {
-        try {
-            const doc = await db.collection('empleadas').doc(id).get();
-            return doc.exists ? { id: doc.id, ...doc.data() } : null;
-        } catch (error) {
-            throw new Error(`Error obteniendo empleada: ${error.message}`);
-        }
+        return await this.db.obtenerEmpleada(id);
     }
 
-    /**
-     * Actualizar empleada
-     */
     static async actualizarEmpleada(id, datos) {
-        try {
-            await db.collection('empleadas').doc(id).update(datos);
-        } catch (error) {
-            throw new Error(`Error actualizando empleada: ${error.message}`);
-        }
+        return await this.db.actualizarEmpleada(id, datos);
     }
 
-    /**
-     * Eliminar empleada (soft delete)
-     */
     static async eliminarEmpleada(id) {
-        try {
-            await db.collection('empleadas').doc(id).update({ activa: false });
-        } catch (error) {
-            throw new Error(`Error eliminando empleada: ${error.message}`);
-        }
+        return await this.db.eliminarEmpleada(id);
     }
 
     // ==================== SERVICIOS ====================
 
-    /**
-     * Crear nuevo servicio
-     */
     static async crearServicio(datos) {
-        try {
-            const docRef = await db.collection('servicios').add({
-                ...datos,
-                fechaCreacion: new Date(),
-                activo: true
-            });
-            return docRef.id;
-        } catch (error) {
-            throw new Error(`Error creando servicio: ${error.message}`);
-        }
+        return await this.db.crearServicio(datos);
     }
 
-    /**
-     * Obtener todos los servicios
-     */
     static async obtenerServicios() {
-        try {
-            const snapshot = await db.collection('servicios')
-                .where('activo', '==', true)
-                .get();
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-        } catch (error) {
-            throw new Error(`Error obteniendo servicios: ${error.message}`);
-        }
+        return await this.db.obtenerServicios();
     }
 
-    /**
-     * Obtener servicio por ID
-     */
     static async obtenerServicio(id) {
-        try {
-            const doc = await db.collection('servicios').doc(id).get();
-            return doc.exists ? { id: doc.id, ...doc.data() } : null;
-        } catch (error) {
-            throw new Error(`Error obteniendo servicio: ${error.message}`);
-        }
+        return await this.db.obtenerServicio(id);
     }
 
-    /**
-     * Actualizar servicio
-     */
     static async actualizarServicio(id, datos) {
-        try {
-            await db.collection('servicios').doc(id).update(datos);
-        } catch (error) {
-            throw new Error(`Error actualizando servicio: ${error.message}`);
-        }
+        return await this.db.actualizarServicio(id, datos);
     }
 
-    /**
-     * Eliminar servicio (soft delete)
-     */
     static async eliminarServicio(id) {
-        try {
-            await db.collection('servicios').doc(id).update({ activo: false });
-        } catch (error) {
-            throw new Error(`Error eliminando servicio: ${error.message}`);
-        }
+        return await this.db.eliminarServicio(id);
     }
 
     // ==================== ATENCIONES ====================
 
-    /**
-     * Crear nueva atención/servicio realizado
-     */
     static async crearAtencion(datos) {
-        try {
-            const docRef = await db.collection('atenciones').add({
-                ...datos,
-                fecha: new Date(),
-                completada: true
-            });
-            return docRef.id;
-        } catch (error) {
-            throw new Error(`Error creando atención: ${error.message}`);
-        }
+        return await this.db.crearAtencion(datos);
     }
 
-    /**
-     * Obtener todas las atenciones
-     */
-    static async obtenerAtenciones(filtros = {}) {
-        try {
-            let query = db.collection('atenciones');
-
-            if (filtros.fecha) {
-                const fechaInicio = new Date(filtros.fecha);
-                const fechaFin = new Date(fechaInicio);
-                fechaFin.setDate(fechaFin.getDate() + 1);
-                query = query.where('fecha', '>=', fechaInicio).where('fecha', '<', fechaFin);
-            }
-
-            if (filtros.idEmpleada) {
-                query = query.where('idEmpleada', '==', filtros.idEmpleada);
-            }
-
-            if (filtros.idClienta) {
-                query = query.where('idClienta', '==', filtros.idClienta);
-            }
-
-            const snapshot = await query.get();
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-        } catch (error) {
-            throw new Error(`Error obteniendo atenciones: ${error.message}`);
-        }
+    static async obtenerAtenciones() {
+        return await this.db.obtenerAtenciones();
     }
 
-    /**
-     * Obtener atención por ID
-     */
     static async obtenerAtencion(id) {
-        try {
-            const doc = await db.collection('atenciones').doc(id).get();
-            return doc.exists ? { id: doc.id, ...doc.data() } : null;
-        } catch (error) {
-            throw new Error(`Error obteniendo atención: ${error.message}`);
-        }
+        return await this.db.obtenerAtencion(id);
     }
 
-    /**
-     * Actualizar atención
-     */
+    static async obtenerAtencionesPorRango(startDate, endDate) {
+        return await this.db.obtenerAtencionesPorRango(startDate, endDate);
+    }
+
     static async actualizarAtencion(id, datos) {
-        try {
-            await db.collection('atenciones').doc(id).update(datos);
-        } catch (error) {
-            throw new Error(`Error actualizando atención: ${error.message}`);
-        }
+        return await this.db.actualizarAtencion(id, datos);
     }
 
-    /**
-     * Eliminar atención
-     */
     static async eliminarAtencion(id) {
-        try {
-            await db.collection('atenciones').doc(id).delete();
-        } catch (error) {
-            throw new Error(`Error eliminando atención: ${error.message}`);
-        }
+        return await this.db.eliminarAtencion(id);
     }
 
-    /**
-     * Obtener atenciones por rango de fechas
-     */
-    static async obtenerAtencionesPorRango(fechaInicio, fechaFin) {
-        try {
-            const fin = new Date(fechaFin);
-            fin.setDate(fin.getDate() + 1);
+    // ==================== USUARIOS ====================
 
-            const snapshot = await db.collection('atenciones')
-                .where('fecha', '>=', new Date(fechaInicio))
-                .where('fecha', '<', fin)
-                .get();
-            
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-        } catch (error) {
-            throw new Error(`Error obteniendo atenciones por rango: ${error.message}`);
-        }
+    static async crearUsuario(uid, datos) {
+        return await this.db.crearUsuario(uid, datos);
+    }
+
+    static async obtenerUsuario(uid) {
+        return await this.db.obtenerUsuario(uid);
     }
 }
+
+// Inicializar en cuanto la página cargue
+window.addEventListener('load', () => {
+    DatabaseService.init();
+});
 
 // Exportar servicio
 window.DatabaseService = DatabaseService;

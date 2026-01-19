@@ -9,7 +9,9 @@ const firebaseConfig = {
     projectId: "appspa-cf14d",
     storageBucket: "appspa-cf14d.firebasestorage.app",
     messagingSenderId: "828208343990",
-    appId: "1:828208343990:web:2336177f5cc7595b0a6f17"
+    appId: "1:828208343990:web:2336177f5cc7595b0a6f17",
+    // Agregar Realtime Database URL (reemplaza 'tu-proyecto' con el nombre de tu proyecto)
+    databaseURL: "https://appspa-cf14d.firebaseio.com"
 };
 
 // Inicializar Firebase
@@ -17,9 +19,11 @@ firebase.initializeApp(firebaseConfig);
 
 // Obtener referencias
 const auth = firebase.auth();
-const db = firebase.firestore();
+const db = firebase.database(); // Realtime Database
+const firestore = firebase.firestore(); // Firestore (como alternativa)
 
 // Exportar para uso global
 window.firebase = firebase;
 window.auth = auth;
 window.db = db;
+window.firestore = firestore;
